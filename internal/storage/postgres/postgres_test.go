@@ -11,6 +11,7 @@ import (
 
 	"link-shortener/internal/cfg"
 	"link-shortener/internal/model"
+	"link-shortener/internal/utils"
 )
 
 const path = "../../cfg"
@@ -40,7 +41,6 @@ func testSetup() *PostgresInstance {
 
 func TestGet(t *testing.T) {
 	p := testSetup()
-	//p.db.Exec("DELETE FROM shorties")
 	shortUrl := "someShortUrl"
 	longUrl := "someUrl"
 	err := p.db.Create(&model.Shortening{
@@ -66,4 +66,16 @@ func TestSave(t *testing.T) {
 		t.Errorf("error occured: %v", err)
 	}
 	assert.Equal(t, shortUrl, res)
+}
+
+func TestUnique(t *testing.T) {
+	p := testSetup()
+	shortUrl := "SELcdoeR9j"
+	longUrl := "https://www.youtube.com/watch?v=GtL1huin9EE"
+	_, err := p.Save(longUrl, 10)
+	res := p.Unique(utils.Hash_func(longUrl+shortUrl, 10), longUrl)
+	if err != nil {
+		t.Errorf("error occured: %v", err)
+	}
+	assert.Equal(t, res, false)
 }

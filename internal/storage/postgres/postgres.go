@@ -39,11 +39,25 @@ func (p *PostgresInstance) Setup() {
 	if err != nil {
 		log.Println(err)
 	}
+	/*
+		tableName := p.db.Statement.Name()
+		del := fmt.Sprintf("DELETE FROM %s", tableName)
+		p.db.Exec(del)
+	*/
 }
 
 // TODO:Добавить проверку на уникальность
 func (p *PostgresInstance) Save(longUrl string, urlLen int) (string, error) {
-	shortUrl := utils.Hash_func(longUrl, urlLen)
+	var shortUrl, copyUrl string
+	copyUrl = longUrl
+	for {
+		shortUrl = utils.Hash_func(copyUrl, urlLen)
+		if p.Unique(shortUrl, longUrl) {
+			break
+		} else {
+			copyUrl += shortUrl
+		}
+	}
 	shorty := model.Shortening{
 		OriginalURL: longUrl,
 		ShortUrl:    shortUrl,
@@ -57,8 +71,9 @@ func (p *PostgresInstance) Save(longUrl string, urlLen int) (string, error) {
 
 func (p *PostgresInstance) Unique(shortUrl string, longUrl string) bool {
 	var shorty model.Shortening
-	r := p.db.Where("short_url = ?", shortUrl).Find(&shorty)
-	return r.RowsAffected == 0
+	p.db.Where("short_url = ?", shortUrl).Find(&shorty)
+	fmt.Println()
+	return (shorty.ShortUrl == "") || (longUrl == shorty.OriginalURL)
 }
 
 func (p *PostgresInstance) Get(shortUrl string) (string, error) {
