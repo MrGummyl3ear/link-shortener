@@ -1,0 +1,14 @@
+syntax  = "proto3";
+
+package pb;
+
+option go_package = ".";
+
+service LinkShortener{
+    rpc PutUrl(Link) returns (Link){}
+    rpc GetUrl(Link) returns (Link){}
+}
+
+message Link{
+    string url = 1;
+}
