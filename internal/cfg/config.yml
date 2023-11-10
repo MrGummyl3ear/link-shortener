@@ -1,6 +1,11 @@
-server:
+gRPCserver:
   host: "localhost"
   port: "8080"
+  linkLength: 10
+
+HTTPserver:
+  host: "localhost"
+  port: "8000"
   linkLength: 10
 
 db:
@@ -10,3 +15,4 @@ db:
   password: "admin"
   dbname: "postgres"
   sslmode: "disable"
+  format: false

@@ -39,14 +39,16 @@ func (p *PostgresInstance) Setup() {
 	if err != nil {
 		log.Println(err)
 	}
-	/*
-		tableName := p.db.Statement.Name()
+	//Если надо очистить таблицу перед работой с ней
+	if dbCfg.Format {
+		stmt := &gorm.Statement{DB: p.db}
+		stmt.Parse(&model.Shortening{})
+		tableName := stmt.Schema.Table
 		del := fmt.Sprintf("DELETE FROM %s", tableName)
 		p.db.Exec(del)
-	*/
+	}
 }
 
-// TODO:Добавить проверку на уникальность
 func (p *PostgresInstance) Save(longUrl string, urlLen int) (string, error) {
 	var shortUrl, copyUrl string
 	copyUrl = longUrl

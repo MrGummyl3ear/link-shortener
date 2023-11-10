@@ -15,6 +15,7 @@ type Config struct {
 	Password      string
 	DbName        string
 	SSLMode       string
+	Format        bool
 }
 
 func Init(path string) {
@@ -31,13 +32,22 @@ func initConfig(path string) error {
 	return viper.ReadInConfig()
 }
 
-func ServConfig() Config {
-	servCfg := Config{
-		ServerAddress: viper.GetString("server.host") + ":" + viper.GetString("server.port"),
-		Port:          viper.GetString("server.port"),
-		LinkLength:    viper.GetInt("server.linkLength"),
+func ServConfig(s string) Config {
+	if s == "gRPC" {
+		servCfg := Config{
+			ServerAddress: viper.GetString("gRPCserver.host") + ":" + viper.GetString("gRPCserver.port"),
+			Port:          viper.GetString("gRPCserver.port"),
+			LinkLength:    viper.GetInt("gRPCserver.linkLength"),
+		}
+		return servCfg
+	} else {
+		servCfg := Config{
+			ServerAddress: viper.GetString("HTTPserver.host") + ":" + viper.GetString("HTTPserver.port"),
+			Port:          viper.GetString("HTTPserver.port"),
+			LinkLength:    viper.GetInt("HTTPserver.linkLength"),
+		}
+		return servCfg
 	}
-	return servCfg
 }
 
 func DbConfig() Config {
@@ -48,6 +58,7 @@ func DbConfig() Config {
 		Password: viper.GetString("db.password"),
 		DbName:   viper.GetString("db.dbname"),
 		SSLMode:  viper.GetString("db.sslmode"),
+		Format:   viper.GetBool("db.format"),
 	}
 	return dbCfg
 }

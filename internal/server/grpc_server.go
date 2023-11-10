@@ -25,7 +25,8 @@ func (s *GRPCServer) PutUrl(ctx context.Context, req *pb.Link) (*pb.Link, error)
 	//newUrl := Gen_ShortUrl(s.Cfg.ServerAddress, utils.Hash_func(req.Url, s.Cfg.LinkLength))
 	newUrl, err := s.db.Save(req.Url, s.Cfg.LinkLength)
 	if err != nil {
-		log.Fatal(err)
+		log.Printf("error with saving the url:%s", err)
+		return &pb.Link{Url: ""}, err
 	}
 	fmt.Println(newUrl)
 	return &pb.Link{Url: newUrl}, nil
@@ -35,7 +36,8 @@ func (s *GRPCServer) PutUrl(ctx context.Context, req *pb.Link) (*pb.Link, error)
 func (s *GRPCServer) GetUrl(ctx context.Context, req *pb.Link) (*pb.Link, error) {
 	newUrl, err := s.db.Get(req.Url)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return &pb.Link{Url: ""}, err
 	}
 	return &pb.Link{Url: newUrl}, nil
 }

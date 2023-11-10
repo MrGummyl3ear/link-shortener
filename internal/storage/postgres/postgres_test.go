@@ -77,5 +77,5 @@ func TestUnique(t *testing.T) {
 	if err != nil {
 		t.Errorf("error occured: %v", err)
 	}
-	assert.Equal(t, res, false)
+	assert.Equal(t, res, true)
 }

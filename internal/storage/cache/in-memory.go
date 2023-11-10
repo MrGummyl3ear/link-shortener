@@ -16,14 +16,8 @@ func NewInMemory() storage.StorageInstance {
 }
 
 func (s *InMemory) Unique(shortUrl string, longUrl string) bool {
-	v, ok := s.m.Load(shortUrl)
-	if !ok {
-		return true
-	}
-	if v.(string) != longUrl {
-		return false
-	}
-	return true
+	v, ok := s.m.Load(shortUrl) //!ok-коротка ссылка ранее не использовалась,  (v.(string) == longUrl) - запись уже есть в хранилище
+	return !ok || (v.(string) == longUrl)
 }
 
 // TODO:реализовать до конца выдачу уникального значения

@@ -2,11 +2,23 @@ syntax  = "proto3";
 
 package pb;
 
+import "google/api/annotations.proto";
+
+
 option go_package = ".";
 
 service LinkShortener{
-    rpc PutUrl(Link) returns (Link){}
-    rpc GetUrl(Link) returns (Link){}
+    rpc PutUrl(Link) returns (Link){
+        option (google.api.http) = {
+            post: "/v1/save_url",
+            body: "*"
+          };
+    }
+    rpc GetUrl(Link) returns (Link){
+        option (google.api.http) = {
+            get: "/v1/{url}"
+          };
+    }
 }
 
 message Link{
