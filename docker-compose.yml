@@ -3,11 +3,7 @@ version: '3.3'
 services:
   db:
     container_name: 'url_shortener_postgres'
-<<<<<<< Updated upstream
-    image: postgres
-=======
     image: postgres:12-alpine
->>>>>>> Stashed changes
     restart: always
     environment:
       - POSTGRES_PORT=5432
@@ -20,15 +16,6 @@ services:
       - ./scripts/structer.sql:/docker-entrypoint-initdb.d/structer.sql
 
   server:
-<<<<<<< Updated upstream
-    container_name: 'shortener_url_service'
-    image: 'shortener_url_service'
-    depends_on:
-      - db
-    ports:
-      - '8000:8000'
-      - '8080:8080'
-=======
     container_name: 'link-shortener_service'
     image: 'link-shortener'
     depends_on:
@@ -36,4 +23,3 @@ services:
     ports:
       - '8080:8080'
       - '8000:8000'
->>>>>>> Stashed changes
