@@ -10,7 +10,11 @@ proto:
 	proto/*.proto
 
 df:
+<<<<<<< Updated upstream
 	sudo docker build --build-arg DATABASE=$(database) --tag shortener_url_service .
+=======
+	sudo docker build --build-arg DATABASE=$(database) --tag link-shortener .
+>>>>>>> Stashed changes
 
 service_up:
 	sudo docker-compose -f docker-compose.yml up -d --remove-orphans

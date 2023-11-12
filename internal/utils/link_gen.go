@@ -8,7 +8,7 @@ import (
 
 // hash function
 
-func Hash_func(s string, len int) string {
+func Hash(s string, len int) string {
 	md5 := MD5(s)
 	tmp_int64 := MD5_to_decimal(md5)
 	res := decimal_to_hash(tmp_int64, len)

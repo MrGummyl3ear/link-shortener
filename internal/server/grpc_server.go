@@ -2,9 +2,9 @@ package server
 
 import (
 	"context"
-	"fmt"
 	"link-shortener/internal/cfg"
 	"link-shortener/internal/storage"
+	"link-shortener/internal/utils"
 	pb "link-shortener/pb"
 	"log"
 )
@@ -22,14 +22,22 @@ func NewServer(cfg cfg.Config, repo storage.StorageInstance) *GRPCServer {
 
 // Put...
 func (s *GRPCServer) PutUrl(ctx context.Context, req *pb.Link) (*pb.Link, error) {
-	//newUrl := Gen_ShortUrl(s.Cfg.ServerAddress, utils.Hash_func(req.Url, s.Cfg.LinkLength))
-	newUrl, err := s.db.Save(req.Url, s.Cfg.LinkLength)
+	var shortUrl, copyUrl string
+	copyUrl = req.Url
+	for {
+		shortUrl = utils.Hash(copyUrl, s.Cfg.LinkLength)
+		if s.db.Unique(shortUrl, copyUrl) {
+			break
+		} else {
+			copyUrl += shortUrl
+		}
+	}
+	err := s.db.Save(copyUrl, shortUrl)
 	if err != nil {
 		log.Printf("error with saving the url:%s", err)
 		return &pb.Link{Url: ""}, err
 	}
-	fmt.Println(newUrl)
-	return &pb.Link{Url: newUrl}, nil
+	return &pb.Link{Url: shortUrl}, nil
 }
 
 // Get...
@@ -41,9 +49,3 @@ func (s *GRPCServer) GetUrl(ctx context.Context, req *pb.Link) (*pb.Link, error)
 	}
 	return &pb.Link{Url: newUrl}, nil
 }
-
-/*
-func Gen_ShortUrl(baseUrl string, url string) string {
-	return baseUrl + "/" + url
-}
-*/

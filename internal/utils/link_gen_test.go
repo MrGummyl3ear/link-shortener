@@ -25,14 +25,14 @@ func TestShorten(t *testing.T) {
 		}
 
 		for _, tc := range testCases {
-			actual := Hash_func(tc.input, 10)
+			actual := Hash(tc.input, 10)
 			assert.Equal(t, tc.expected, actual)
 		}
 	})
 
 	t.Run("is idempotent", func(t *testing.T) {
 		for i := 0; i < 100; i++ {
-			assert.Equal(t, "Ln7gEz8mcI", Hash_func("google.com", 10))
+			assert.Equal(t, "Ln7gEz8mcI", Hash("google.com", 10))
 		}
 	})
 }

@@ -57,23 +57,24 @@ func TestGet(t *testing.T) {
 	assert.Equal(t, longUrl, res)
 }
 
-func TestSave(t *testing.T) {
+func TestSaveGet(t *testing.T) {
 	p := testSetup()
 	shortUrl := "SELcdoeR9j"
 	longUrl := "https://www.youtube.com/watch?v=GtL1huin9EE"
-	res, err := p.Save(longUrl, 10)
+	err := p.Save(longUrl, shortUrl)
 	if err != nil {
 		t.Errorf("error occured: %v", err)
 	}
-	assert.Equal(t, shortUrl, res)
+	res, err := p.Get(shortUrl)
+	assert.Equal(t, longUrl, res)
 }
 
 func TestUnique(t *testing.T) {
 	p := testSetup()
 	shortUrl := "SELcdoeR9j"
 	longUrl := "https://www.youtube.com/watch?v=GtL1huin9EE"
-	_, err := p.Save(longUrl, 10)
-	res := p.Unique(utils.Hash_func(longUrl+shortUrl, 10), longUrl)
+	err := p.Save(longUrl, shortUrl)
+	res := p.Unique(utils.Hash(longUrl+shortUrl, 10), longUrl)
 	if err != nil {
 		t.Errorf("error occured: %v", err)
 	}
