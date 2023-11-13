@@ -9,7 +9,7 @@
   ```bash
   make service_up
   ```
-- Для запуска приложения без docker
+- Для запуска приложения локально надо поменять адрес HTTP на "localhost" в internal/cfg/config.yml
   ```bash
   go mod init ./cmd/link-shortener
   go mod tidy
