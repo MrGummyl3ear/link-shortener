@@ -53,11 +53,13 @@ func (p *PostgresInstance) Save(longUrl string, shortUrl string) error {
 		OriginalURL: longUrl,
 		ShortUrl:    shortUrl,
 	}
-	err := p.db.Create(&shorty).Error
+	tx := p.db.Begin()
+	err := tx.Create(&shorty).Error
 	if err != nil {
 		log.Println(err)
+		tx.Rollback()
 	}
-	return err
+	return tx.Commit().Error
 }
 
 func (p *PostgresInstance) Unique(shortUrl string, longUrl string) bool {
@@ -68,9 +70,11 @@ func (p *PostgresInstance) Unique(shortUrl string, longUrl string) bool {
 
 func (p *PostgresInstance) Get(shortUrl string) (string, error) {
 	var shorty model.Shortening
-	tx := p.db.Where("short_url = ?", shortUrl).First(&shorty)
-	if tx.Error != nil {
-		return "", tx.Error
+	tx := p.db.Begin()
+	req := tx.Where("short_url = ?", shortUrl).First(&shorty)
+	if req.Error != nil {
+		tx.Rollback()
+		return "", req.Error
 	}
-	return shorty.OriginalURL, nil
+	return shorty.OriginalURL, tx.Commit().Error
 }
