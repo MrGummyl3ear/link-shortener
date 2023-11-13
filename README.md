@@ -11,5 +11,7 @@
   ```
 - Для запуска приложения без docker
   ```bash
+  go mod init ./cmd/link-shortener
+  go mod tidy
   make run
   ```
