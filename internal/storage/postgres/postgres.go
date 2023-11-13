@@ -10,7 +10,6 @@ import (
 	"link-shortener/internal/cfg"
 	"link-shortener/internal/model"
 	"link-shortener/internal/storage"
-	"link-shortener/internal/utils"
 )
 
 type PostgresInstance struct {
@@ -49,17 +48,7 @@ func (p *PostgresInstance) Setup() {
 	}
 }
 
-func (p *PostgresInstance) Save(longUrl string, urlLen int) (string, error) {
-	var shortUrl, copyUrl string
-	copyUrl = longUrl
-	for {
-		shortUrl = utils.Hash_func(copyUrl, urlLen)
-		if p.Unique(shortUrl, longUrl) {
-			break
-		} else {
-			copyUrl += shortUrl
-		}
-	}
+func (p *PostgresInstance) Save(longUrl string, shortUrl string) error {
 	shorty := model.Shortening{
 		OriginalURL: longUrl,
 		ShortUrl:    shortUrl,
@@ -68,13 +57,12 @@ func (p *PostgresInstance) Save(longUrl string, urlLen int) (string, error) {
 	if err != nil {
 		log.Println(err)
 	}
-	return shortUrl, err
+	return err
 }
 
 func (p *PostgresInstance) Unique(shortUrl string, longUrl string) bool {
 	var shorty model.Shortening
 	p.db.Where("short_url = ?", shortUrl).Find(&shorty)
-	fmt.Println()
 	return (shorty.ShortUrl == "") || (longUrl == shorty.OriginalURL)
 }
 

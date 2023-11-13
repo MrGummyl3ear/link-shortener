@@ -3,7 +3,6 @@ package cache
 import (
 	"link-shortener/internal/model"
 	"link-shortener/internal/storage"
-	"link-shortener/internal/utils"
 	"sync"
 )
 
@@ -21,19 +20,9 @@ func (s *InMemory) Unique(shortUrl string, longUrl string) bool {
 }
 
 // TODO:реализовать до конца выдачу уникального значения
-func (s *InMemory) Save(longUrl string, urlLen int) (string, error) {
-	var shortUrl, copyUrl string
-	copyUrl = longUrl
-	for {
-		shortUrl = utils.Hash_func(copyUrl, urlLen)
-		if s.Unique(shortUrl, longUrl) {
-			break
-		} else {
-			copyUrl += shortUrl
-		}
-	}
+func (s *InMemory) Save(longUrl string, shortUrl string) error {
 	s.m.Store(shortUrl, longUrl)
-	return shortUrl, nil
+	return nil
 }
 
 func (s *InMemory) Get(shortUrl string) (string, error) {
