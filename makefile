@@ -1,7 +1,7 @@
 database ?= "in-memory"
 
 run:
-	go run ./cmd/main.go -database=$(database)
+	go run ./cmd/link-shortener/main.go -database=$(database)
 
 proto:
 	protoc --proto_path=proto --go_out=pb --go_opt=paths=source_relative \
