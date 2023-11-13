@@ -55,7 +55,7 @@ func RunGrpcServer(servCfg cfg.Config, repo storage.StorageInstance) {
 		log.Fatal(err)
 	}
 
-	log.Printf("start gRPC gateaway server:%s", listener.Addr().String())
+	log.Printf("start gRPC server:%s", listener.Addr().String())
 	if err := s.Serve(listener); err != nil {
 		log.Fatalf("cannot start gRPC server:%s", err)
 	}
